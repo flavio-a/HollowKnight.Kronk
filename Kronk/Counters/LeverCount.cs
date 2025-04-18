@@ -12,7 +12,7 @@ namespace Kronk.Counters
         {
             Kronk.instance.Log("Hooking Lever Count...");
             Hooks.OnFsmEnable += CountLevers;
-            On.BridgeLever.OpenBridge += CountBridgeLevers;
+            //On.BridgeLever.OpenBridge += CountBridgeLevers;
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += CountMantisLever;
         }
         private static bool IsActive => Kronk.globalSettings.countingMode == CountingMode.Levers;
@@ -35,12 +35,12 @@ namespace Kronk.Counters
                 }));
             }
         }
-        private static IEnumerator CountBridgeLevers(On.BridgeLever.orig_OpenBridge orig, BridgeLever self)
-        {
-            IncrementLeverCount();
+        //private static IEnumerator CountBridgeLevers(On.BridgeLever.orig_OpenBridge orig, BridgeLever self)
+        //{
+        //    IncrementLeverCount();
 
-            return orig(self);
-        }
+        //    return orig(self);
+        //}
         private static void CountMantisLever(Scene arg0, Scene arg1)
         {
             if (!string.IsNullOrEmpty(arg0.name)

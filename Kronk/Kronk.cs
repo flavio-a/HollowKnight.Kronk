@@ -55,8 +55,6 @@ namespace Kronk
         #endregion
 
 
-
-
         public override void Initialize()
         {
             Log("Initializing...");
@@ -69,10 +67,10 @@ namespace Kronk
 
             Display.Hook();
 
-            if (ModHooks.GetMod("FStatsMod") is not null)
-            {
-                Interop.FStatsInterop.HookFStats();
-            }
+            //if (ModHooks.GetMod("FStatsMod") is not null)
+            //{
+            //    Interop.FStatsInterop.HookFStats();
+            //}
         }
 
 

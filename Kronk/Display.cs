@@ -121,9 +121,9 @@ namespace Kronk
             Kronk.instance.Log("Hooking Display...");
 
             ModHooks.AfterSavegameLoadHook += OnLoad;
-            On.QuitToMenu.Start += OnQuitToMenu;
-            On.InvAnimateUpAndDown.AnimateUp += OnInventoryOpen;
-            On.InvAnimateUpAndDown.AnimateDown += OnInventoryClose;
+            On.UIManager.GoToMainMenu += OnQuitToMenu;
+            //On.InvAnimateUpAndDown.AnimateUp += OnInventoryOpen;
+            //On.InvAnimateUpAndDown.AnimateDown += OnInventoryClose;
             On.UIManager.UIGoToPauseMenu += OnPause;
             On.UIManager.UIClosePauseMenu += OnUnpause;
 
@@ -140,23 +140,23 @@ namespace Kronk
             UpdateText();
         }
 
-        private static IEnumerator OnQuitToMenu(On.QuitToMenu.orig_Start orig, QuitToMenu self)
+        private static IEnumerator OnQuitToMenu(On.UIManager.orig_GoToMainMenu orig, UIManager self)
         {
             Destroy();
             return orig(self);
         }
 
-        private static void OnInventoryOpen(On.InvAnimateUpAndDown.orig_AnimateUp orig, InvAnimateUpAndDown self)
-        {
-            orig(self);
-            Hide();
-        }
+        //private static void OnInventoryOpen(On.InvAnimateUpAndDown.orig_AnimateUp orig, InvAnimateUpAndDown self)
+        //{
+        //    orig(self);
+        //    Hide();
+        //}
 
-        private static void OnInventoryClose(On.InvAnimateUpAndDown.orig_AnimateDown orig, InvAnimateUpAndDown self)
-        {
-            orig(self);
-            Show();
-        }
+        //private static void OnInventoryClose(On.InvAnimateUpAndDown.orig_AnimateDown orig, InvAnimateUpAndDown self)
+        //{
+        //    orig(self);
+        //    Show();
+        //}
 
         private static void OnPause(On.UIManager.orig_UIGoToPauseMenu orig, UIManager self)
         {
