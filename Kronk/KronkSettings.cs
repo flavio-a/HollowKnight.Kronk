@@ -8,6 +8,8 @@ namespace Kronk
         #region Levers
         public int LeversHit = 0;
         public bool MantisRewardsLever = false;
+        public bool BridgeLever1 = false;
+        public bool BridgeLever2 = false;
         #endregion
 
         #region Rocks

@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using HutongGames.PlayMaker;
+﻿using HutongGames.PlayMaker;
 using UnityEngine.SceneManagement;
 using Kronk.Util;
+using Modding;
 
 namespace Kronk.Counters
 {
@@ -12,9 +12,30 @@ namespace Kronk.Counters
         {
             Kronk.instance.Log("Hooking Lever Count...");
             Hooks.OnFsmEnable += CountLevers;
-            //On.BridgeLever.OpenBridge += CountBridgeLevers;
+            ModHooks.SlashHitHook += CountBridgeLevers;
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += CountMantisLever;
         }
+
+        private static void CountBridgeLevers(UnityEngine.Collider2D otherCollider, UnityEngine.GameObject _slash)
+        {
+            string otherName = otherCollider.name;
+            if (otherCollider.gameObject.scene.name != "Fungus2_21" || !otherName.StartsWith("Bridge Lever "))
+            {
+                return;
+            }
+            //Kronk.instance.LogDebug("Slash hit! " + otherCollider.name + "(" + otherCollider.gameObject.scene.name + ")");
+            if (otherName == "Bridge Lever 1" && !Kronk.localSettings.BridgeLever1)
+            {
+                Kronk.localSettings.BridgeLever1 = true;
+                IncrementLeverCount();
+            }
+            if (otherName == "Bridge Lever 2" && !Kronk.localSettings.BridgeLever2)
+            {
+                Kronk.localSettings.BridgeLever2 = true;
+                IncrementLeverCount();
+            }
+        }
+
         private static bool IsActive => Kronk.globalSettings.countingMode == CountingMode.Levers;
 
         private static void CountLevers(PlayMakerFSM fsm)
@@ -35,12 +56,7 @@ namespace Kronk.Counters
                 }));
             }
         }
-        //private static IEnumerator CountBridgeLevers(On.BridgeLever.orig_OpenBridge orig, BridgeLever self)
-        //{
-        //    IncrementLeverCount();
 
-        //    return orig(self);
-        //}
         private static void CountMantisLever(Scene arg0, Scene arg1)
         {
             if (!string.IsNullOrEmpty(arg0.name)
