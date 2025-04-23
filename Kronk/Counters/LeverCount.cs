@@ -16,24 +16,22 @@ namespace Kronk.Counters
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += CountMantisLever;
         }
 
+        public static void Unhook()
+        {
+            Kronk.instance.Log("Unhooking Lever Count...");
+            Hooks.OnFsmEnable -= CountLevers;
+            ModHooks.SlashHitHook -= CountBridgeLevers;
+            UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= CountMantisLever;
+        }
+
         private static void CountBridgeLevers(UnityEngine.Collider2D otherCollider, UnityEngine.GameObject _slash)
         {
-            string otherName = otherCollider.name;
-            if (otherCollider.gameObject.scene.name != "Fungus2_21" || !otherName.StartsWith("Bridge Lever "))
+            if (otherCollider.gameObject.scene.name != "Fungus2_21" || !otherCollider.name.StartsWith("Bridge Lever "))
             {
                 return;
             }
-            //Kronk.instance.LogDebug("Slash hit! " + otherCollider.name + "(" + otherCollider.gameObject.scene.name + ")");
-            if (otherName == "Bridge Lever 1" && !Kronk.localSettings.BridgeLever1)
-            {
-                Kronk.localSettings.BridgeLever1 = true;
-                IncrementLeverCount();
-            }
-            if (otherName == "Bridge Lever 2" && !Kronk.localSettings.BridgeLever2)
-            {
-                Kronk.localSettings.BridgeLever2 = true;
-                IncrementLeverCount();
-            }
+            //Kronk.instance.LogDebug("Slash hit! " + otherCollider.name + "(" + otherCollider.gameObject.scene.name + ", " + otherCollider.enabled + ")");
+            AddLeverHit(GetLeverId(otherCollider.gameObject));
         }
 
         private static bool IsActive => Kronk.globalSettings.countingMode == CountingMode.Levers;
@@ -52,36 +50,44 @@ namespace Kronk.Counters
             {
                 hitState.AddFirstAction(new ExecuteLambda(() =>
                 {
-                    IncrementLeverCount();
+                    AddLeverHit(GetLeverId(fsm.gameObject));
                 }));
             }
         }
 
-        private static void CountMantisLever(Scene arg0, Scene arg1)
+        private static void CountMantisLever(Scene _arg0, Scene _arg1)
         {
-            if (!string.IsNullOrEmpty(arg0.name)
-                && GameManager.GetBaseSceneName(arg0.name) == "Fungus2_15"
-                && arg1.name == "Fungus2_31"
-                && !Kronk.localSettings.MantisRewardsLever
+            // Check if the scene added at the bottom of the queue is Fungus2_31
+            if (UnityEngine.SceneManagement.SceneManager.GetSceneAt(UnityEngine.SceneManagement.SceneManager.sceneCount - 1).name == "Fungus2_31"
                 && PlayerData.instance.defeatedMantisLords)
             {
-                Kronk.localSettings.MantisRewardsLever = true;
-                IncrementLeverCount();
+                AddLeverHit("MantisLordsReward-Fungus2_31");
             }
         }
 
-        private static void IncrementLeverCount()
+        private static void AddLeverHit(string leverId)
         {
-            Kronk.localSettings.LeversHit += 1;
+            if (Kronk.localSettings.LeversHit.Contains(leverId))
+            {
+                //Kronk.instance.LogDebug($"Hit lever {leverId}, but not counted");
+                return;
+            }
+            //Kronk.instance.LogDebug($"Hit lever {leverId}, adding");
+            Kronk.localSettings.LeversHit.Add(leverId);
 
             if (IsActive)
             {
                 Display.UpdateText();
-                if (Kronk.localSettings.LeversHit == NUMOBJECTS)
+                if (Kronk.localSettings.LeversCount == NUMOBJECTS)
                 {
                     Kronk.SendMessageToLivesplit();
                 }
             }
+        }
+
+        private static string GetLeverId(UnityEngine.GameObject lever)
+        {
+            return $"{lever.name}-{lever.scene.name}";
         }
     }
 }

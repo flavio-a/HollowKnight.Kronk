@@ -6,10 +6,8 @@ namespace Kronk
     public class KronkSettings
     {
         #region Levers
-        public int LeversHit = 0;
-        public bool MantisRewardsLever = false;
-        public bool BridgeLever1 = false;
-        public bool BridgeLever2 = false;
+        public HashSet<string> LeversHit = new HashSet<string>();
+        public int LeversCount => LeversHit.Count();
         #endregion
 
         #region Rocks

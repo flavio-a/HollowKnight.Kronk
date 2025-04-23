@@ -62,11 +62,11 @@ namespace Kronk
             switch (Kronk.globalSettings.countingMode)
             {
                 case CountingMode.Levers:
-                    string leverOrLevers = "Lever" + (Kronk.localSettings.LeversHit == 1 ? "" : "s");
+                    string leverOrLevers = "Lever" + (Kronk.localSettings.LeversCount == 1 ? "" : "s");
 
-                    canvasText.GetComponent<UnityEngine.UI.Text>().text = $"{Kronk.localSettings.LeversHit} {leverOrLevers}";
+                    canvasText.GetComponent<UnityEngine.UI.Text>().text = $"{Kronk.localSettings.LeversCount} {leverOrLevers}";
 
-                    if (Kronk.localSettings.LeversHit >= Counters.LeverCount.NUMOBJECTS)
+                    if (Kronk.localSettings.LeversCount >= Counters.LeverCount.NUMOBJECTS)
                     {
                         canvasText.GetComponent<UnityEngine.UI.Text>().color = Color.yellow;
                     }
