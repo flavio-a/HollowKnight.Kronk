@@ -8,6 +8,9 @@ namespace Kronk.Counters
     public static class LeverCount
     {
         internal const int NUMOBJECTS = 63;
+
+        private static readonly CounterUpdate updateHelper = new CounterUpdate(NUMOBJECTS);
+
         public static void Hook()
         {
             Kronk.instance.Log("Hooking Lever Count...");
@@ -77,11 +80,7 @@ namespace Kronk.Counters
 
             if (IsActive)
             {
-                Display.UpdateText();
-                if (Kronk.localSettings.LeversCount == NUMOBJECTS)
-                {
-                    Kronk.SendMessageToLivesplit();
-                }
+                updateHelper.CounterUpdated(Kronk.localSettings.LeversCount);
             }
         }
 

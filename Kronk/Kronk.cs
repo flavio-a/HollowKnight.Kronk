@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Modding;
 using System.Collections;
 using UnityEngine;
@@ -90,6 +89,6 @@ namespace Kronk
             GameManager.instance.StartCoroutine(toggleMark());
         }
 
-        public override string GetVersion() => Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public override string GetVersion() => GetType().Assembly.GetName().Version.ToString();
     }
 }
